@@ -24,10 +24,10 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Auth } from "firebase/auth";
 
 const Register = ({ navigation }) => {
-  const [email, setEmail] = useState("arun123@gmail.com");
-  const [password, setPassword] = useState("123321");
-  const [firstName, setFirstName] = useState("Arun");
-  const [lastName, setLastName] = useState("Deshan");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   const handleLogin = () => {
     e.preventDefault();
@@ -55,7 +55,8 @@ const Register = ({ navigation }) => {
     return null;
   }
 
-  const registerUser = async (email, password, firstName, lastName) => {
+  const registerUser = async () => {
+    if (name === "" || phone == "" || email === "" || password === "") return;
     await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -80,7 +81,7 @@ const Register = ({ navigation }) => {
               .firestore()
               .collection("users")
               .doc(firebase.auth().currentUser.uid)
-              .set({ firstName, lastName, email, userid });
+              .set({ name, phone, email, userid });
             console.log("Added");
           })
           .catch((error) => {
@@ -108,17 +109,21 @@ const Register = ({ navigation }) => {
         </Text>
       </View>
 
+      {/* name */}
       <View className="border-2 border-[#A6A9AB] w-[90%] h-11 mt-8 rounded-xl flex-row">
         <View className="justify-center ml-3">
           <Ionicons name="person-outline" size={22} color="#A6A9AB" />
         </View>
         <View className="justify-center ml-2">
-          <TextInput placeholder="Name" placeholderTextColor={"#A6A9AB"} />
+          <TextInput
+            placeholder="Name"
+            placeholderTextColor={"#A6A9AB"}
+            onChangeText={(e) => setName(e)}
+          />
         </View>
       </View>
 
       {/* Email */}
-
       <View className="border-2 border-[#A6A9AB] w-[90%] h-11 mt-4 rounded-xl flex-row">
         <View className="justify-center ml-2">
           <MaterialCommunityIcons
@@ -131,22 +136,26 @@ const Register = ({ navigation }) => {
           <TextInput
             placeholder="E-mail"
             placeholderTextColor={"#A6A9AB"}
-            onChange={(e) => setEmail(e.target.value)}
+            onChangeText={(e) => setEmail(e)}
           />
         </View>
       </View>
 
+      {/* phone */}
       <View className="border-2 border-[#A6A9AB] w-[90%] h-11 mt-4 rounded-xl flex-row">
         <View className="justify-center ml-3">
           <FontAwesome name="mobile" size={32} color="#A6A9AB" />
         </View>
         <View className="justify-center ml-3">
-          <TextInput placeholder="mobile" placeholderTextColor={"#A6A9AB"} />
+          <TextInput
+            placeholder="mobile"
+            placeholderTextColor={"#A6A9AB"}
+            onChangeText={(e) => setPhone(e)}
+          />
         </View>
       </View>
 
       {/* Password */}
-
       <View className="flex border-2 border-[#A6A9AB] w-[90%] h-11 mt-4 rounded-xl flex-row justify-between">
         <View className="flex-row">
           <View className="justify-center ml-1 mb-2">
@@ -158,7 +167,7 @@ const Register = ({ navigation }) => {
               secureTextEntry={!isPasswordShow}
               placeholder="password"
               placeholderTextColor={"#A6A9AB"}
-              onChange={(e) => setPassword(e.target.value)}
+              onChangeText={(e) => setPassword(e)}
             />
           </View>
         </View>
@@ -177,7 +186,7 @@ const Register = ({ navigation }) => {
 
       {/* Login Button */}
       <TouchableOpacity
-        onPress={() => registerUser(email, password, firstName, lastName)}
+        onPress={() => registerUser()}
         className="
         bg-[#FFD662] items-center 
           justify-center w-[90%] h-11 mt-4 rounded-xl"
